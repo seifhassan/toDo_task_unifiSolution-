@@ -5,7 +5,7 @@ const {Todo} = require('./models/todo');
 const mongoose = require('mongoose');
 require('dotenv').config();
 
-const mongoUrl = process.env.mongoUrl;
+const mongoUrl = process.env.MONGO_URL;
 mongoose.connect(mongoUrl)
 .then(()=>console.log('conected'))
 .catch((error)=>console.log(error));
