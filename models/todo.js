@@ -8,7 +8,7 @@ const todoSchema = new Schema(
       type: String,
       required: true,
       minlength: 5,
-      maxlength: 20,
+      maxlength: 50,
     },
     status: {
       type: String,
@@ -17,7 +17,7 @@ const todoSchema = new Schema(
     },
     tags: {
       type: String,
-      maxlength: 20,
+      maxlength: 50,
     },
     id: {
       type: Number,

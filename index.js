@@ -1,8 +1,10 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const routes = require('./routes');
+require('dotenv').config();
 
-const mongoUrl = "mongodb+srv://seiffhassann:SD9xbXBtCzMl7PTQ@todo.tssk0ug.mongodb.net/"
+const mongoUrl = process.env.MONGO_URL;
+const PORT = process.env.PORT;
 mongoose.connect(mongoUrl)
 .then(()=>console.log('connected'))
 .catch((error)=>console.log(error));
@@ -28,6 +30,6 @@ app.use((error, req, res, next) => {
     .status(error.statusCode)
     .json({ error: error.toString() });
 });
-const PORT = process.env.PORT || 3000;
+
 
 app.listen(PORT, () => { console.log(`UP : localhost:${PORT}`); });
