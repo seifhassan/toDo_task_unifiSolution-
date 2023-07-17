@@ -5,6 +5,13 @@ const { TodoValidator, validation } = require('../middleware/validation')
 
 const router = express.Router();
 
+router.get('/', async (req, res, next) => {
+  const { query: { limit, skip, status } ,body: {userId},} = req;
+  const todos = todosController.get({ limit, skip, status },userId);
+  const [error, data] = await asycnWrapper(todos);
+  if (error) return next(error);
+  return res.status(200).json(data);
+});
 
 router.get('/:id', validation(TodoValidator.idParam), async (req, res, next) => {
   const { params: { id }, body: { userId } } = req;
@@ -68,5 +75,6 @@ router.delete('/:id', validation(TodoValidator.idParam), async (req, res, next) 
     todo: data,
   });
 });
+
 
 module.exports = router;

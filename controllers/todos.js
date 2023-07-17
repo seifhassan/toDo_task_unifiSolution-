@@ -5,6 +5,19 @@ const create = async (todo) => {
   return Todo.create(todo);
 };
 
+const get = async (filters,userId) => { 
+  const query={userId:userId};
+  if(filters.status){
+    query.status = filters.status
+  }
+ return await Todo.find(query)
+  .skip(filters.skip || 0)
+  .limit(filters.limit > 0 && filters.limit < 10 ? filters.limit : 10)
+  .populate('userId')
+  .exec();
+} 
+
+
 
 
 const getTodo = async (id,userId) => { 
@@ -47,4 +60,5 @@ module.exports = {
   updateById,
   deleteById,
   getTodo,
+  get,
 };
