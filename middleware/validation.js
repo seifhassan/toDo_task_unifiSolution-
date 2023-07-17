@@ -45,8 +45,7 @@ const TodoValidator = {
     body: Joi.object().keys({
       title: Joi.string().required().min(3).trim(),
       status: Joi.string().valid("new","inprogress", "done").required(),
-      tags: Joi.array().items(Joi.string().required()).required(),
-      userId: Joi.string().required(),
+      tags: Joi.required(),
     }),
   },
   getTodo: {
@@ -58,7 +57,7 @@ const TodoValidator = {
   //   params: Joi.object().keys({
   //     id: Joi.string().required(),
   //   }),
- // },
+  // },
   update: {
     body: Joi.object().keys({
       title: Joi.string().min(3).trim(),
@@ -73,10 +72,7 @@ const TodoValidator = {
   idParam: {
     params: Joi.object().keys({
       id: Joi.string().required(),
-    }),
-    body: Joi.object().keys({
-      userId: Joi.string().required(),
-    }),
+    })
   },
 };
 

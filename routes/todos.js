@@ -3,19 +3,22 @@ const { todosController } = require('../controllers');
 const { asycnWrapper } = require('../lib');
 const { TodoValidator, validation } = require('../middleware/validation')
 
+const { auth } = require('../middleware/auth');
+
 const router = express.Router();
+router.use(auth);
 
 router.get('/', async (req, res, next) => {
-  const { query: { limit, skip, status } ,body: {userId},} = req;
-  const todos = todosController.get({ limit, skip, status },userId);
+  const { query: { limit, skip, status }} = req;
+  const todos = todosController.get({ limit, skip, status },req.user.id);
   const [error, data] = await asycnWrapper(todos);
   if (error) return next(error);
   return res.status(200).json(data);
 });
 
 router.get('/:id', validation(TodoValidator.idParam), async (req, res, next) => {
-  const { params: { id }, body: { userId } } = req;
-  const todo = todosController.getTodo(id, userId);
+  const { params: { id } } = req;
+  const todo = todosController.getTodo(id, req.user.id);
   const [error, data] = await asycnWrapper(todo);
   if (error) return next(error);
   return res.status(200).json(data);
@@ -24,10 +27,10 @@ router.get('/:id', validation(TodoValidator.idParam), async (req, res, next) => 
 
 router.post('/', validation(TodoValidator.addTodo), async (req, res, next) => {
   const {
-    body: { title, status, tags, userId },
+    body: { title, status, tags },
   } = req;
   const todo = todosController.create({
-    title, status, tags, userId,
+    title, status, tags,userId: req.user.id,
   });
   const [error, data] = await asycnWrapper(todo);
   if (error) return next(error);
@@ -40,12 +43,12 @@ router.post('/', validation(TodoValidator.addTodo), async (req, res, next) => {
 
 router.patch('/:id', validation(TodoValidator.update), async (req, res, next) => {
   const {
-    body: { title, status, tags, userId },
+    body: { title, status, tags },
     params: { id },
   } = req;
 
   const updatedTodo = todosController.updateById(id, {
-    title, status, tags, userId,
+    title, status, tags, userId:req.user.id,
   });
   const [error, data] = await asycnWrapper(updatedTodo);
   if (error) return next(error);
@@ -62,9 +65,8 @@ router.patch('/:id', validation(TodoValidator.update), async (req, res, next) =>
 router.delete('/:id', validation(TodoValidator.idParam), async (req, res, next) => {
   const {
     params: { id },
-    body: { userId },
   } = req;
-  const todo = todosController.deleteById(id, userId);
+  const todo = todosController.deleteById(id, req.user.id);
   const [error, data] = await asycnWrapper(todo);
   if (error) return next(error);
   if (!data) {
